@@ -57,8 +57,8 @@ lowest stock movement, whereas South one is the smallest with the largest amount
 while the most required ones need immediate restock. There might be an issue with repository systems.    
 •	There are though 3 clear least-sold models, one of which is absolutely dead (zero sales) and other one with very low revenues. Might consider ditching the bitches.  
 
-Solutions
-Following the SQL analysis and conclusions, I propose these actions:
+Solutions  
+Following the SQL analysis and conclusions, I propose these actions:  
 •	If there is an absolute need on reducing cost from facilities (either rent, services, taxes, etc) I suggest closing the South warehouse and distribute its 
 product lines as follows: Trains and Ships to North and Trucks and Buses to West. This decision is based only in storage size and overall revenue, because no other
 parameters are relevant for the decision (shipping, inventory movement, product line diversity).  
