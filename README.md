@@ -52,7 +52,7 @@ preferences.
 •	Although there is some difference of preference on products lines, the highest sold and the lowest sold are the same ones between regions, and belong to the 
 same product lines with one exception.   
 •	There is, however, a substantial difference in warehouse diversity and revenue. East warehouse is the biggest one with least diversity of product lines and 
-lowest stock movement, whereas South one is the smallest with the largest amount of product lines and the highest movement of inventory.  
+lowest stock movement, whereas South one is the smallest with the largest amount of product lines and the highest movement of inventory.    
 •	North and South are working at 72 and 75% of their capacity, respectively. And the 3 largest warehouses are alarmingly overstocked in low selling products, 
 while the most required ones need immediate restock. There might be an issue with repository systems.    
 •	There are though 3 clear least-sold models, one of which is absolutely dead (zero sales) and other one with very low revenues. Might consider ditching the bitches.  
