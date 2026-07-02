@@ -52,19 +52,19 @@ preferences.
 •	Although there is some difference of preference on products lines, the highest sold and the lowest sold are the same ones between regions, and belong to the 
 same product lines with one exception.   
 •	There is, however, a substantial difference in warehouse diversity and revenue. East warehouse is the biggest one with least diversity of product lines and 
-lowest stock movement, whereas South one is the smallest with the largest amount of product lines and the highest movement of inventory. 
+lowest stock movement, whereas South one is the smallest with the largest amount of product lines and the highest movement of inventory.  
 •	North and South are working at 72 and 75% of their capacity, respectively. And the 3 largest warehouses are alarmingly overstocked in low selling products, 
-while the most required ones need immediate restock. There might be an issue with repository systems.  
+while the most required ones need immediate restock. There might be an issue with repository systems.    
 •	There are though 3 clear least-sold models, one of which is absolutely dead (zero sales) and other one with very low revenues. Might consider ditching the bitches.  
 
 Solutions
 Following the SQL analysis and conclusions, I propose these actions:
 •	If there is an absolute need on reducing cost from facilities (either rent, services, taxes, etc) I suggest closing the South warehouse and distribute its 
 product lines as follows: Trains and Ships to North and Trucks and Buses to West. This decision is based only in storage size and overall revenue, because no other
-parameters are relevant for the decision (shipping, inventory movement, product line diversity).
+parameters are relevant for the decision (shipping, inventory movement, product line diversity).  
 •	Primarily: reduce 10% of stock volume for flagged items. This could be achieved by sales events or promotion, to recover the investment on historically 
-low-selling products.
+low-selling products.  
 •	Eventually eliminate inventory items S18_3233 and S24_3969. Both of them match the conditions of severely overstock (either low sales or dead sales), 
-and revenues below 30K. 
-•	Observe restock mechanisms and be vigilant on providers.
+and revenues below 30K.   
+•	Observe restock mechanisms and be vigilant on providers.  
 
