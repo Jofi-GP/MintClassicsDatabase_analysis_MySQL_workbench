@@ -11,11 +11,11 @@ Objectives
 
 Skills demonstrated \
 
-  •	Import an existing database using MySQL Workbench and creating an EER (Extension. \ 
-  •	Become familiarized with business and its data by reviewing a relational model diagram and exploring tables of data in MySQL Workbench. \
-  •	Analyze inventory data using SQL queries in MySQL Workbench that retrieve data from a multiple-table relational database using SQL commands. \
-  •	Develop recommendations and suggestions for solving a business need/problem based on data analysis. \
-  •	Support your recommendations and suggestions for inventory reduction in the form of scripted queries. \
+1. Import an existing database using MySQL Workbench and creating an EER (Extension.  
+2. Become familiarized with business and its data by reviewing a relational model diagram and exploring tables of data in MySQL Workbench. 
+3. Analyze inventory data using SQL queries in MySQL Workbench that retrieve data from a multiple-table relational database using SQL commands. 
+4. Develop recommendations and suggestions for solving a business need/problem based on data analysis. 
+5. Support your recommendations and suggestions for inventory reduction in the form of scripted queries. 
   
 Summary
 
