@@ -1,7 +1,7 @@
 Analysis Report for Mint Classics Model Cars
 
-Project Scenario
-  Mint Classics Company, a retailer of classic model cars and other vehicles, is looking at closing one of their storage facilities. 
+Project Scenario\
+  Mint Classics Company, a retailer of classic model cars and other vehicles, is looking at closing one of their storage facilities.\
 To support a data-based business decision, they are looking for suggestions and recommendations for reorganizing or reducing inventory, while still maintaining timely service to their customers.
 
 Objectives
@@ -9,17 +9,17 @@ Objectives
 2. Determine important factors that may influence inventory reorganization/reduction.
 3. Provide analytic insights and data-driven recommendations.
 
-Skills demonstrated
-  •	Import an existing database using MySQL Workbench and creating an EER (Extension. 
-  •	Become familiarized with business and its data by reviewing a relational model diagram and exploring tables of data in MySQL Workbench. 
-  •	Analyze inventory data using SQL queries in MySQL Workbench that retrieve data from a multiple-table relational database using SQL commands.
-  •	Develop recommendations and suggestions for solving a business need/problem based on data analysis.
-  •	Support your recommendations and suggestions for inventory reduction in the form of scripted queries.
+Skills demonstrated\
+
+  •	Import an existing database using MySQL Workbench and creating an EER (Extension.\ 
+  •	Become familiarized with business and its data by reviewing a relational model diagram and exploring tables of data in MySQL Workbench.\
+  •	Analyze inventory data using SQL queries in MySQL Workbench that retrieve data from a multiple-table relational database using SQL commands.\
+  •	Develop recommendations and suggestions for solving a business need/problem based on data analysis.\
+  •	Support your recommendations and suggestions for inventory reduction in the form of scripted queries.\
+  
 Summary
-Mint Classics retail business operates through 7 offices in some of the most important cities around the globe. EMEA and NA are their largest customers, each taking around 
-40% of the market share. Their cured inventory of classic and vintage model cars, motorcycles and other specialized vehicles, is distributed across four warehouses 
-(North, East, South, West), each hosting 1-3 product lines. Storage facilities are not organized by territory, and they are active in every country proportionally 
-to their stock volume.
+
+Mint Classics retail business operates through 7 offices in some of the most important cities around the globe. EMEA and NA are their largest customers, each taking around 40% of the market share. Their cured inventory of classic and vintage model cars, motorcycles and other specialized vehicles, is distributed across four warehouses (North, East, South, West), each hosting 1-3 product lines. Storage facilities are not organized by territory, and they are active in every country proportionally to their stock volume.\
 To optimize their storage facilities capacities and align inventory with sales figures and objectives, I conducted a deep analysis of their business dynamics, 
 identifying cold product stocks and low-sales product lines, to come up with a complete reorganization while considering their customers' voices. 
 
