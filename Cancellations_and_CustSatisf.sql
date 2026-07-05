@@ -1,7 +1,6 @@
 -- Product quality & Customer satisfaction
  
- -- Provide statistics of orders statuses from the orders placed. Found that I needed to place status inside backquotes because
- -- if not it was taken as a function
+ -- Provide statistics of orders status from the orders table -percentage of orders processed, cancelled, on hold or disputed. 
 
 SELECT 
     o.status AS order_status,
@@ -11,7 +10,7 @@ FROM orders o
 GROUP BY o.`status`
 ORDER BY total_orders DESC;
   
- -- After this analysis, I found that some orders were cancelled or disputed.
+ -- From this analysis, I found that some orders were cancelled or disputed.
  -- CAN THE COMMENT SECTION GIVE ME A HINT ON WHY ITEMS DID NOT SHIP?
 
 -- This is a complex query because I neededd to compile a lot of data. Perhaphs I might have used a CTE. 
@@ -46,9 +45,8 @@ GROUP BY o.orderNumber, o.customernumber, c.country, o.`status`, o.comments
 ORDER BY reasons_comments;
 
 -- From that table, 5 orders (10253, 10386, 10367, 10415 and 10417) were cancelled or disputed because of product quality issues
--- and customer insatisfaction. Maybe it can give a hint on products we can take out of our inventory.
-
--- Do orders affected by comments on product quality include the same items? This will help to identify bad products.
+-- and customer dissatisfaction. Although it is a low proportion of orders, it might give a hint on products we can take out of our inventory.
+-- Do all orders affected by comments on product quality include the same items? 
 -- Here, I show that they do not.
 
 SELECT
