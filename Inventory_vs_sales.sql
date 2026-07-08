@@ -51,7 +51,11 @@ SELECT
             SUM(od.quantityOrdered * od.priceEach) / NULLIF(SUM(od.quantityOrdered), 0), 
             0
         ), 2
-    ) AS average_revenue_per_unit
+    ) AS average_revenue_per_unit,
+	COALESCE(
+        ROUND(STDDEV_SAMP(od.priceEach), 2), 
+        0
+    ) AS revenue_per_unit_stddev
 FROM products p
 INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
 -- LEFT JOIN ensures products with zero sales or zero revenue are included
