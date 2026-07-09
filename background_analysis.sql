@@ -65,69 +65,69 @@ ORDER BY
 
 -- First, calculated the Avg price of each item instead of just adding up priceEach, 
 -- because individual sales might have been closed with different negotiated prices. Using conditional aggregation allows 
--- to differentiate averages per region instead of historical per item.
+-- to differentiate averages per region instead of historical per item. I calculated STD and SEM for all AVGs.
 -- I used GREATEST() and LEAST() to find the largest and smallest prices in regions to calculate 
 -- the max_price_difference between regions. I learned that it allows me to scan columns, instead of rows like MAX and MIN.
 -- I combined results using a CTE RegionalAverages. 
 
-WITH RegionalAverages AS (
+WITH RegionalMetrics AS (
     SELECT 
         od.productcode, 
-        p.productName,
+        p.productName, 
         p.productLine,
-        -- Keep raw values here for clean, precise math later
+        
+        -- North America (NA) Metrics
         AVG(CASE WHEN ofc.territory = 'NA' THEN od.priceEach END) AS avg_na,
+        STDDEV_SAMP(CASE WHEN ofc.territory = 'NA' THEN od.priceEach END) AS std_na,
+        COUNT(CASE WHEN ofc.territory = 'NA' THEN od.priceEach END) AS count_na,
+        
+        -- EMEA Metrics
         AVG(CASE WHEN ofc.territory = 'EMEA' THEN od.priceEach END) AS avg_emea,
-        AVG(CASE WHEN ofc.territory = 'APAC' THEN od.priceEach END) AS avg_apac
+        STDDEV_SAMP(CASE WHEN ofc.territory = 'EMEA' THEN od.priceEach END) AS std_emea,
+        COUNT(CASE WHEN ofc.territory = 'EMEA' THEN od.priceEach END) AS count_emea,
+        
+        -- APAC Metrics
+        AVG(CASE WHEN ofc.territory = 'APAC' THEN od.priceEach END) AS avg_apac,
+        STDDEV_SAMP(CASE WHEN ofc.territory = 'APAC' THEN od.priceEach END) AS std_apac,
+        COUNT(CASE WHEN ofc.territory = 'APAC' THEN od.priceEach END) AS count_apac
+
     FROM orderdetails od 
-    JOIN products p ON od.productcode = p.productcode
+    JOIN products p ON od.productcode = p.productcode 
     JOIN orders o ON od.ordernumber = o.ordernumber 
     JOIN customers c ON o.customernumber = c.customernumber 
     JOIN employees e ON c.salesrepemployeenumber = e.employeenumber 
     JOIN offices ofc ON e.officecode = ofc.officecode 
-    GROUP BY 
-        od.productcode, 
-        p.productname
+    GROUP BY od.productcode, p.productname, p.productLine
 )
 SELECT 
-    productcode,
-    productName,
+    productcode, 
+    productName, 
     productLine,
-    -- Round everything once at the very end
-    ROUND(avg_na, 2) AS avg_price_na,
-    ROUND(avg_emea, 2) AS avg_price_emea,
+    
+    -- Rounded Averages
+    ROUND(avg_na, 2) AS avg_price_na, 
+    ROUND(avg_emea, 2) AS avg_price_emea, 
     ROUND(avg_apac, 2) AS avg_price_apac,
+    
+    -- Standard Deviations (Measures internal regional price spread)
+    ROUND(std_na, 2) AS std_dev_na,
+    ROUND(std_emea, 2) AS std_dev_emea,
+    ROUND(std_apac, 2) AS std_dev_apac,
+    
+    -- Standard Errors (Measures error/accuracy of your average calculation: STD / SQRT(N))
+    ROUND(std_na / NULLIF(SQRT(count_na), 0), 2) AS std_error_na,
+    ROUND(std_emea / NULLIF(SQRT(count_emea), 0), 2) AS std_error_emea,
+    ROUND(std_apac / NULLIF(SQRT(count_apac), 0), 2) AS std_error_apac,
+    
+    -- Maximum Regional Spread
     ROUND(
         GREATEST(COALESCE(avg_na, 0), COALESCE(avg_emea, 0), COALESCE(avg_apac, 0)) - 
         LEAST(COALESCE(avg_na, 999999), COALESCE(avg_emea, 999999), COALESCE(avg_apac, 999999)), 
         2
     ) AS max_price_difference_between_regions
-FROM RegionalAverages
-ORDER BY 
-    max_price_difference_between_regions DESC, 
-    productcode;
-    
 
--- Part b customers demographics and flagging
-
--- Observe total customers per country and how many orders they placed
--- this will give us information on active customers, highest-engaged countries and regions, which can be used to strengthen efforts on
--- increasing sales 
--- in this case, customers are not divided per territory. I forced it manually with a CASE clause with their country being represented in any region
-SELECT 
-    CASE 
-        WHEN c.country IN ('USA', 'Canada', 'Mexico') THEN 'NA'
-        WHEN c.country IN ('Australia', 'New Zealand', 'Japan', 'Singapore', 'Hong Kong', 'China', 'India', 'South Korea', 'Philippines', 'Malaysia', 'Taiwan') THEN 'APAC'
-        WHEN c.country IN ('UK', 'France', 'Germany', 'Spain', 'Italy', 'Netherlands', 'Belgium', 'Switzerland', 'Austria', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Poland', 'Russia', 'South Africa', 'UAE', 'Israel', 'Egypt') THEN 'EMEA'
-        ELSE 'Other/Unknown'
-    END AS Region,
-    c.country,
-    COUNT(DISTINCT c.customerNumber) AS Total_Customers,
-    COUNT(DISTINCT o.ordernumber) AS Total_orders
-FROM customers c
-LEFT JOIN orders o ON c.customerNumber = o.customerNumber
-GROUP BY c.country
-ORDER BY Region DESC;
+FROM RegionalMetrics 
+ORDER BY max_price_difference_between_regions DESC, productcode;
 
 -- I observed there are countries with zero orders. Calculate the proportion of inactive customers (zero orders placed)
 
