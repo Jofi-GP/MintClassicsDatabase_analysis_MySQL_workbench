@@ -99,6 +99,7 @@ ORDER BY ship_days DESC;
 SELECT
 		COUNT(o.ordernumber) AS number_of_orders,
         ROUND(AVG(DATEDIFF(o.shippedDate, o.orderdate)),0) AS avg_days_to_ship,
+	    ROUND(STDDEV_SAMP(DATEDIFF(o.shippedDate, o.orderDate)), 1) AS ship_days_stddev,
         c.country,
         group_concat(DISTINCT w.warehouseName SEPARATOR ',') AS warehouses_affected
 FROM orders o
