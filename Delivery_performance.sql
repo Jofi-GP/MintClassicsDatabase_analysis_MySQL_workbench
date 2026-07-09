@@ -38,7 +38,8 @@ SELECT
         ELSE 'On time'
     END AS delivery_performance,
     COUNT(*) AS total_orders,
-     IFNULL(CAST(ROUND(AVG(DATEDIFF(o.shippedDate, o.orderdate)), 0) AS CHAR), 'NA') AS avg_days_to_ship
+     IFNULL(CAST(ROUND(AVG(DATEDIFF(o.shippedDate, o.orderdate)), 0) AS CHAR), 'NA') AS avg_days_to_ship,
+	 IFNULL(CAST(ROUND(STDDEV_SAMP(DATEDIFF(o.shippedDate, o.orderdate)), 1) AS CHAR), '0.0') AS shipping_stddev
 FROM orders o
 GROUP BY 
     CASE 
@@ -53,6 +54,7 @@ GROUP BY
 SELECT
 		COUNT(o.ordernumber) AS number_of_orders,
         ROUND(AVG(DATEDIFF(o.shippedDate, o.orderdate)),0) AS avg_days_to_ship,
+	    ROUND(STDDEV_SAMP(DATEDIFF(o.shippedDate, o.orderDate)), 1) AS ship_days_stddev,
         c.country,
         group_concat(DISTINCT w.warehouseName SEPARATOR ',') AS warehouses_affected
 FROM orders o
@@ -107,3 +109,65 @@ INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
 WHERE o.shippeddate IS NOT NULL AND o.orderNumber <> '10165'
 GROUP BY c.country
 ORDER BY avg_days_to_ship DESC;
+
+
+-- investigated shipments to USA only, to discriminate against warehouse of origin, destination city, and days to ship
+
+SELECT o.orderNumber,
+	   o.orderDate,
+       o.shippedDate,
+       c.city,
+       DATEDIFF(o.shippedDate, o.orderDate) AS ship_days,
+       GROUP_CONCAT(DISTINCT w.warehouseName SEPARATOR ', ') AS affected_warehouses,
+       CASE 
+            WHEN o.comments REGEXP 'budget|credit|offer|hold' THEN 'Previously on hold'
+            WHEN o.comments REGEXP 'complaint|color|scale|dispute' THEN 'Previously disputed'
+            WHEN o.comments REGEXP 'damag|missing' THEN 'Shipping issues'
+            WHEN o.comments REGEXP 'mistake' THEN 'Mistaken order'
+            WHEN o.comments REGEXP 'on hold' THEN 'Previously on hold'
+            WHEN o.comments IS NULL OR TRIM(o.comments) = '' THEN 'No comment'
+            ELSE 'Irrelevant comments'
+        END AS Reasons_Comments
+FROM orders o
+INNER JOIN orderdetails od ON o.orderNumber = od.orderNumber
+INNER JOIN customers c ON o.customerNumber = c.customerNumber
+INNER JOIN products p ON od.productCode = p.productCode
+INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
+WHERE shippedDate IS NOT NULL AND country = 'USA'
+GROUP BY o.orderNumber
+ORDER BY ship_days DESC;
+
+-- Calculated average days to ship to cities and its std
+
+SELECT
+		COUNT(o.ordernumber) AS number_of_orders,
+        ROUND(AVG(DATEDIFF(o.shippedDate, o.orderdate)),0) AS avg_days_to_ship,
+        ROUND(STDDEV_SAMP(DATEDIFF(o.shippedDate, o.orderDate)), 1) AS ship_days_stddev,
+        c.city,
+        c.`state`,
+        group_concat(DISTINCT w.warehouseName SEPARATOR ',') AS warehouses_affected
+FROM orders o
+INNER JOIN customers c ON o.customerNumber = c.customerNumber
+INNER JOIN orderdetails od ON o.orderNumber = od.orderNumber
+INNER JOIN products p ON od.productCode = p.productCode
+INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
+WHERE o.shippeddate IS NOT NULL AND country = 'USA'
+GROUP BY c.city, c.`state`
+ORDER BY avg_days_to_ship DESC;
+       
+-- Calculated average days to ship per state 
+
+SELECT 
+       COUNT(Distinct o.orderNumber) AS Number_of_orders,	   
+       c.`state`,
+       round(AVG(DATEDIFF(o.shippedDate, o.orderDate)),0) AS ship_days,
+       ROUND(STDDEV_SAMP(DATEDIFF(o.shippedDate, o.orderDate)), 1) AS ship_days_stddev,
+       GROUP_CONCAT(DISTINCT w.warehouseName SEPARATOR ', ') AS affected_warehouses
+FROM orders o
+INNER JOIN customers c ON o.customerNumber = c.customerNumber
+INNER JOIN orderdetails od ON o.orderNumber = od.orderNumber
+INNER JOIN products p ON od.productCode = p.productCode
+INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
+WHERE shippedDate IS NOT NULL AND country = 'USA'
+GROUP BY c.state 
+ORDER BY ship_days DESC;
