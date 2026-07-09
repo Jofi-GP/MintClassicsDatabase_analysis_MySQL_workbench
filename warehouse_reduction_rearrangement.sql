@@ -278,9 +278,12 @@ SELECT
     p.productLine,
     COALESCE(SUM(od.quantityOrdered), 0) AS total_units_sold_lifetime,
     p.quantityInStock AS current_stock,
-    -- 1. Calculate exactly what 20% of the current stock looks like
-    FLOOR(p.quantityInStock * 0.20) AS target_reduction_units,
-     COALESCE(p.quantityInStock - FLOOR(p.quantityInStock * 0.20), 0) AS remaining_stock,
+     -- 1. If lifetime sales are 0, target a 100% reduction. Otherwise, target 20%.
+    CASE 
+        WHEN COALESCE(SUM(od.quantityOrdered), 0) = 0 THEN p.quantityInStock
+        ELSE FLOOR(p.quantityInStock * 0.20)
+    END AS target_reduction_units,
+      -- 2. Subtract the dynamic target reduction from current stock to get the new remaining stock
     
     CASE 
         WHEN SUM(od.quantityOrdered) IS NULL OR SUM(od.quantityOrdered) = 0 THEN 'Absolute Dead (0 Sales)'
@@ -302,7 +305,7 @@ GROUP BY w.warehouseName, p.productCode, p.productName, p.productLine, p.quantit
 HAVING stock_health_status IN ('Severely Overstock', 'Absolute Dead (0 Sales)')
 ORDER BY total_units_sold_lifetime ASC, current_stock DESC;
 
--- After calculations, the actual reduction in inventory for each warehouse was 18.9%.
+-- The actual reduction in inventory for each warehouse was 21.8% for East and 18.6% for West.
 -- APPLY THESE CHANGES TO THE SIMULATED WAREHOUSE REDUCTION FOR WEST CLOSURE
 
 SELECT 
@@ -315,13 +318,14 @@ SELECT
     -- Formats the new capacity percentage to 1 decimal place with a % symbol
     CONCAT(FORMAT(SimulatedData.RawPctCap, 1), '%') AS `Simulated Capacity (%)`
 FROM (
-    -- EAST WAREHOUSE CONSOLIDATION WITH 20% REDUCTION applied to East & West (Vintage Cars) stocks
+    -- EAST WAREHOUSE CONSOLIDATION WITH 21% REDUCTION applied to East and 18% to West (Vintage Cars) stocks
     SELECT 
         w.warehouseCode AS `Warehouse Code`,
         'East (Consolidated)' AS `Simulated Warehouse`,
         'Classic cars, Vintage Cars' AS `New Product Lines`,
         
-        -- 1. Simulated Stock (Both East and Vintage Cars inventory were reduced by 18.9%, therefore retained inventory is 81% or 0.81)
+        -- 1. Simulated Stock (East inventory was reduced by 21.8%, and Vintage Cars by 18.6%,
+	     -- therefore retained inventory is 78.2% and 81.4% respectively)
         ((SELECT COALESCE(SUM(quantityInStock), 0) FROM products WHERE warehouseCode = w.warehouseCode) * 0.81) +
         ((SELECT COALESCE(SUM(quantityInStock), 0) FROM products WHERE productLine = 'Vintage Cars') * 0.81) AS RawStock,
         
