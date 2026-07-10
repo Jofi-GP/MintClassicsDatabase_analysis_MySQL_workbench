@@ -22,15 +22,12 @@ SELECT  w.warehouseName,
 )),2) AS tied_capital_per_product_line,
         FORMAT(SUM(od.quantityOrdered * od.priceEach), 2) AS total_revenue_generated,
 FORMAT(
-        COALESCE(
-            SUM(od.quantityOrdered * od.priceEach) / NULLIF(SUM(od.quantityOrdered), 0), 
-            0
-        ), 2
+        COALESCE(SUM(od.quantityOrdered * od.priceEach) / NULLIF(SUM(od.quantityOrdered), 0), 0), 2
     ) AS average_revenue_per_unit,
-    COALESCE(
-        ROUND(STDDEV_SAMP(od.priceEach), 2), 
-        0
-    ) AS revenue_per_unit_stddev
+    COALESCE(ROUND(STDDEV_SAMP(od.priceEach), 2), 0) 
+	  AS revenue_per_unit_stddev,
+    COALESCE(ROUND(STDDEV_SAMP(od.priceEach) / NULLIF(SQRT(COUNT(od.priceEach)), 0), 2), 0.00) 
+	  AS std_error
 FROM orderdetails od
 INNER JOIN products p ON od.productCode = p.productCode
 INNER JOIN orders o ON od.orderNumber = o.orderNumber
