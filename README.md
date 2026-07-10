@@ -1,3 +1,14 @@
+
+SQL scripts repository used for this report are organized as follows:
+1.	Data cleared: critical step to ensure correct formatting of dates, and updated Japan into APAC region
+2.	Background analysis: queries used to describe the overall business organization (regional sales and price gaps, customers demographics and active accounts, flagged customers)
+3.	Cancellations and customer satisfaction: queries to answer if comments on orders table could help in determining warehouse connections to cancellations and disputes
+4.	Delivery performance: queries used to find out the average days to ship per country or region and map the warehouse-to-region shipping.
+5.	Inventory vs sales: queries for calculating the most and least sold items, average revenue per unit and total revenue of product lines.
+6.	Stock movement: SQL queries for observing the stock health per warehouse (how many items were sold compared to stored) and recalculating the inventory reduction and restock
+7.	Warehouse rearrangement: SQL queries to determine capacity ranks, product diversity, original distribution of product lines and what if scenarios.
+
+
 Analysis Report for Mint Classics Model Cars
 
 Project Scenario\
@@ -25,46 +36,43 @@ identifying cold product stocks and low-sales product lines, to come up with a c
 
 Approach
 Step-by-step
-1.	Understanding the data:  
-a.	Created an Extended Entity-Relationship (EER) diagram  
-b.	Data quality checkup:  
-i.	Checked duplicate orders  
-ii.	Checked dates formatting and normalize to yyyy-mm-dd  
-iii.	Checked missing information (dates, payments, order numbers, contacts)  
-iv.	Updated the offices table to include Japan into APAC territory  
-c.	Provided relevant statistics on regional sales, customers demographics, shipment details and distribution of product lines  
-2.	Analysis formulation:  
-a.	Where are items stored and if they were rearranged, could a warehouse be eliminated?  
-b.	How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?  
-c.	Are we storing items that are not moving? Are any items candidates for being dropped from the product line?  
-3.	Insights and conclusions  
-a.	Solution  
+1.	Explore products currently in inventory:  
+  a.	Imported mintclassics database to MySQL Workbench  
+  b.	Create an Extended Entity-Relationship (EER) diagram and investigate inter and intra table relationships (foreign keys, primary keys)  
+  c.	Data quality checkup using SQL:  
+    i.	Check dates formatting and normalize to yyyy-mm-dd  
+    ii.	Check missing or duplicated information and update tables if necessary  
+  d.	Use SQL to retrieve information from multi-table relationships and provide relevant statistics  
+2.	Determine important factors that may influence inventory reorganization/reduction:  
+  a.	What is the role of storage facilities regarding global shipping? Are some warehouses more efficient than others?  
+  b.	Where are items stored and if they were rearranged, could a warehouse be eliminated?  
+  c.	How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?  
+  d.	Are we storing items that are not moving? Are any items candidates for being dropped from the product line?  	
+3.	Formulate suggestions and recommendations for solving the business problem:  
+  a.	Provide analytic insights and data-driven recommendations  
+  b.	Create what-if scenarios  
+4.	Final conclusions  
 
-Results are the SQL files included in this repository
+Insights and conclusions    
+ 
+Key takeaways   
 
-Insights and conclusions  
-Key takeaways from the analysis  
-•	Roughly 2% of total orders are cancelled and/or disputed, and the reasons are mostly customer financial situation and their satisfaction with the product. 
-There is no link between distinct warehouses and cancellations or disputes.  
-•	Each warehouse ships to all regions proportionally to the number of customers and revenue. There is no reason to reorganize warehouses according to regional 
-preferences.  
-•	Classic cars is the product line with the highest revenue, followed by Vintage cars. Ships, trains and planes are the least sold, in that order.  
-•	Although there is some difference of preference on products lines, the highest sold and the lowest sold are the same ones between regions, and belong to the 
-same product lines with one exception.   
-•	There is, however, a substantial difference in warehouse diversity and revenue. East warehouse is the biggest one with least diversity of product lines and 
-lowest stock movement, whereas South one is the smallest with the largest amount of product lines and the highest movement of inventory.    
-•	North and South are working at 72 and 75% of their capacity, respectively. And the 3 largest warehouses are alarmingly overstocked in low selling products, 
-while the most required ones need immediate restock. There might be an issue with repository systems.    
-•	There are though 3 clear least-sold models, one of which is absolutely dead (zero sales) and other one with very low revenues. Might consider ditching the bitches.  
+•	No evident link was found between warehouses and orders cancellations or disputes.
+•	There is no reason to reorganize warehouses by regions, since there are no correlations on product lines revenues with regional shipping. 
+•	East warehouse is the number one in ranking capacity and holds the higher revenue, even though its stock is slow-moving; South is the smallest in size and revenue, working almost at its full capacity, but has a healthy stock with items moving frequently; and West is the second largest facility, working at half capacity and probably experiencing delays in shipping. 
+•	The 3 largest warehouses are alarmingly overstocked in low-selling products, while the most sold products need immediate restock. There might be an issue with repository or suppliers.
+•	Delivery performance is similar between warehouses; however, the average number of days from ordering to shipping could be improved.  
+•	Taking into consideration the high volatility on revenue per unit shown in the charts above, dropping items from the product line  or even calculating revenue per warehouse based just on volume sales is not appropriate; each model must be analyzed separately.  
 
 Solutions  
 Following the SQL analysis and conclusions, I propose these actions:  
-•	If there is an absolute need on reducing cost from facilities (either rent, services, taxes, etc) I suggest closing the South warehouse and distribute its 
-product lines as follows: Trains and Ships to North and Trucks and Buses to West. This decision is based only in storage size and overall revenue, because no other
-parameters are relevant for the decision (shipping, inventory movement, product line diversity).  
-•	Primarily: reduce 10% of stock volume for flagged items. This could be achieved by sales events or promotion, to recover the investment on historically 
-low-selling products.  
-•	Eventually eliminate inventory items S18_3233 and S24_3969. Both of them match the conditions of severely overstock (either low sales or dead sales), 
-and revenues below 30K.   
-•	Observe restock mechanisms and be vigilant on providers.  
+•	There are two possible options for closing a storage facility:   
+1.	Closing the South warehouse and distributing its product lines as follows: Trains and Ships to North and Trucks and Buses to West. This decision is based solely on stock volume and capacity on the remaining storages, since this facility is in overall good shape.  
+2.	Close West warehouse and move items to East. West is a large facility, therefore more expensive, and is working at 50% of capacity. Moreover, it is associated with slow deliveries and severe overstock.   
+	However, East warehouse cannot absorb the entire West inventory, because its capacity would be saturated.   
+	Splitting a product line in several warehouses is not a good idea either; it can introduce complications with suppliers and post-sales operations
+•	To overcome these issues, I suggest:  
+o	Reducing 20% of each overstock volume in East and West warehouses and eliminating product S18_3233 from the product line before the closure of West.   
+o	This could be achieved by sales events or promotions.   
+ 
 
