@@ -57,12 +57,12 @@ Insights and conclusions
  
 Key takeaways   
 
-•	No evident link was found between warehouses and orders cancellations or disputes.
-•	There is no reason to reorganize warehouses by regions, since there are no correlations on product lines revenues with regional shipping. 
-•	East warehouse is the number one in ranking capacity and holds the higher revenue, even though its stock is slow-moving; South is the smallest in size and revenue, working almost at its full capacity, but has a healthy stock with items moving frequently; and West is the second largest facility, working at half capacity and probably experiencing delays in shipping. 
-•	The 3 largest warehouses are alarmingly overstocked in low-selling products, while the most sold products need immediate restock. There might be an issue with repository or suppliers.
-•	Delivery performance is similar between warehouses; however, the average number of days from ordering to shipping could be improved.  
-•	Taking into consideration the high volatility on revenue per unit shown in the charts above, dropping items from the product line  or even calculating revenue per warehouse based just on volume sales is not appropriate; each model must be analyzed separately.  
+•	No evident link was found between warehouses and orders cancellations or disputes.  
+•	There is no reason to reorganize warehouses by regions, since there are no correlations on product lines revenues with regional shipping.   
+•	East warehouse is the number one in ranking capacity and holds the higher revenue, even though its stock is slow-moving; South is the smallest in size and revenue, working almost at its full capacity, but has a healthy stock with items moving frequently; and West is the second largest facility, working at half capacity and probably experiencing delays in shipping.   
+•	The 3 largest warehouses are alarmingly overstocked in low-selling products, while the most sold products need immediate restock. There might be an issue with repository or suppliers.  
+•	Delivery performance is similar between warehouses; however, the average number of days from ordering to shipping could be improved.    
+•	Taking into consideration the high volatility on revenue per unit shown in the charts above, dropping items from the product line  or even calculating revenue per warehouse based just on volume sales is not appropriate; each model must be analyzed separately.    
 
 Solutions  
 Following the SQL analysis and conclusions, I propose these actions:  
