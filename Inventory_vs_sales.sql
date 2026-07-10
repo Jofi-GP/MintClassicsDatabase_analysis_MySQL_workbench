@@ -7,26 +7,44 @@
 -- This is important to consider if the strategy is to get rid of a couple of product lines in order to make space.
 
 USE mintclassics;
-SELECT  p.productLine,
+SELECT  w.warehouseName,
+	    p.productLine,
         MIN(w_stock.total_warehouse_stock) AS units_stock,
         SUM(od.quantityOrdered) AS units_sold,
         COUNT(DISTINCT p.productCode) AS unique_products,
         ROUND(100.0 * SUM(od.quantityOrdered) / SUM(SUM(od.quantityOrdered)) OVER(), 2) AS pct_of_total_sales,
 		ROUND(100.0 * SUM(od.quantityOrdered) / NULLIF(MIN(w_stock.total_warehouse_stock) + SUM(od.quantityOrdered), 0), 1) AS sold_to_stock_ratio,
-        w.warehouseName,
-        FORMAT(SUM(od.quantityOrdered * od.priceEach), 2) AS total_revenue_generated
+        FORMAT(MIN((
+    SELECT COALESCE(SUM(quantityInStock * buyPrice), 0) 
+    FROM products 
+    WHERE warehouseCode = w.warehouseCode 
+      AND productLine = p.productLine
+)),2) AS tied_capital_per_product_line,
+        FORMAT(SUM(od.quantityOrdered * od.priceEach), 2) AS total_revenue_generated,
+FORMAT(
+        COALESCE(
+            SUM(od.quantityOrdered * od.priceEach) / NULLIF(SUM(od.quantityOrdered), 0), 
+            0
+        ), 2
+    ) AS average_revenue_per_unit,
+    COALESCE(
+        ROUND(STDDEV_SAMP(od.priceEach), 2), 
+        0
+    ) AS revenue_per_unit_stddev
 FROM orderdetails od
 INNER JOIN products p ON od.productCode = p.productCode
 INNER JOIN orders o ON od.orderNumber = o.orderNumber
 INNER JOIN warehouses w ON p.warehouseCode = w.warehouseCode
 -- Subquery to calculate accurate total stock per warehouse/productline without duplication
 INNER JOIN (
-    SELECT warehouseCode, productLine, SUM(quantityInStock) AS total_warehouse_stock
+    SELECT warehouseCode, 
+           productLine, 
+           SUM(quantityInStock) AS total_warehouse_stock
     FROM products
     GROUP BY warehouseCode, productLine
 ) w_stock ON p.warehouseCode = w_stock.warehouseCode AND p.productLine = w_stock.productLine
 -- Filter out unshipped orders
-WHERE o.`status` NOT IN ('On Hold', 'Cancelled', 'In Process') 
+WHERE o.`status` IN ('Shipped') 
 GROUP BY w.warehouseCode, w.warehouseName, p.productLine
 ORDER BY pct_of_total_sales DESC;
 
