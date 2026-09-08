@@ -1,7 +1,7 @@
 # Mint Classics Model Cars Case
 The capstone project for Coursera's 10-series specialization course on SQL for Data Analysis and Business Insights.
 
-Mint Classics Model Cars operates worldwide to provide their customers with vintage and classic model cars as well as other small-scale vehicles. Their goal is to close one of its warehouses and discard low performing models while maintaining shipping efficiency and customer satisfaction.
+Mint Classics Model Cars holds a vast collection of vintage and classic model cars as well as other small-scale vehicles in a worldwide distribution system. Their goal is to close one of its warehouses and discard low performing models while maintaining shipping efficiency and customer satisfaction.
 
 ## MySQL scripts  
 File's details and organization:
