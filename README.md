@@ -13,6 +13,9 @@ File's details and organization:
   6.	Stock movement: observed the stock health per warehouse (how many items were sold compared to stored) and recalculating the inventory reduction and restock
   7.	Warehouse reduction rearrangement: determined capacity ranks, product diversity, original distribution of product lines and what if scenarios
 
+## Final Report
+Analysis Report for Mint Classics Models Cars database: comprehensive document with the most significant insights and the solution proposal.
+
 Each script has detailed explanations and rationale on the techniques used, as well as partial conclusions on the data generated.
 No conflict of interest. The data and company name have been simulated for public content.
 
